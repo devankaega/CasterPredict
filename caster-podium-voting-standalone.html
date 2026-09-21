@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Caster Podium Voting · MLBB Asian Games 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#EEF0F7; --surface:#FFFFFF; --surface2:#E4E8F3; --ink:#0B1230; --muted:#566083; --line:#CCD2E4;
+  --accent:#C21F45; --accent-ink:#FFFFFF; --ok:#1B7F4B;
+  --gold:#D9A21B; --silver:#98A0B4; --bronze:#B8692F;
+  --gold-ink:#3A2A00; --silver-ink:#1E2436; --bronze-ink:#FFF4EA;
+  --display:'Barlow Condensed','Arial Narrow',Impact,sans-serif;
+  --body:'Barlow',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#080D24; --surface:#111838; --surface2:#1A2350; --ink:#F1F3FB; --muted:#98A2C6; --line:#28336A;
+    --accent:#E63357; --ok:#4CC58A; --gold:#EBB93E; --silver:#C3C9D8; --bronze:#D0803F;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#080D24; --surface:#111838; --surface2:#1A2350; --ink:#F1F3FB; --muted:#98A2C6; --line:#28336A;
+  --accent:#E63357; --ok:#4CC58A; --gold:#EBB93E; --silver:#C3C9D8; --bronze:#D0803F;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 56px}
+h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:.01em}
+h1{font-size:clamp(30px,7vw,44px);line-height:1;font-weight:800}
+h2{font-size:22px;font-weight:700}
+.sub{color:var(--muted);margin:8px 0 0;max-width:56ch}
+.pill{display:inline-block;margin-top:12px;font-size:13px;font-weight:600;padding:4px 10px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
+.pill.on{color:var(--ok);border-color:var(--ok)}
+.pill.off{color:var(--accent);border-color:var(--accent)}
+.tabs{display:flex;gap:6px;margin:18px 0 18px;border-bottom:2px solid var(--line)}
+.tab{appearance:none;background:none;border:0;color:var(--muted);font:600 17px var(--display);padding:10px 14px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab[hidden]{display:none}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.panel[hidden],[hidden]{display:none!important}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px}
+.banner{border-radius:12px;padding:12px 14px;margin-bottom:16px;font-weight:600;background:var(--surface2);border-left:4px solid var(--accent)}
+.banner.info{border-left-color:var(--ok)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.row{grid-template-columns:1fr}}
+label{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
+input[type=text],select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px 12px}
+textarea{min-height:130px;resize:vertical;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px}
+
+.podium{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;align-items:end;margin-top:14px;min-height:250px}
+.slot{appearance:none;border:2px dashed var(--line);background:var(--surface2);border-radius:12px 12px 4px 4px;padding:8px 4px 10px;color:var(--ink);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;text-align:center;font:inherit;transition:border-color .15s,transform .15s}
+.slot .medal{font:800 15px var(--display);letter-spacing:.03em;padding:2px 8px;border-radius:99px;margin-bottom:4px}
+.slot .flag{font-size:clamp(30px,8vw,46px);line-height:1;min-height:1.1em}
+.slot .tn{font:700 clamp(13px,3.4vw,17px)/1.1 var(--display);word-break:break-word}
+.slot .empty{font-size:12px;color:var(--muted)}
+.slot[data-k="gold"]{min-height:250px}
+.slot[data-k="silver"]{min-height:205px}
+.slot[data-k="bronze1"],.slot[data-k="bronze2"]{min-height:165px}
+.slot[data-k="gold"] .medal{background:var(--gold);color:var(--gold-ink)}
+.slot[data-k="silver"] .medal{background:var(--silver);color:var(--silver-ink)}
+.slot[data-k="bronze1"] .medal,.slot[data-k="bronze2"] .medal{background:var(--bronze);color:var(--bronze-ink)}
+.slot.filled{border-style:solid}
+.slot[data-k="gold"].filled{border-color:var(--gold)}
+.slot[data-k="silver"].filled{border-color:var(--silver)}
+.slot[data-k="bronze1"].filled,.slot[data-k="bronze2"].filled{border-color:var(--bronze)}
+.slot.active{border-color:var(--accent);border-style:solid;transform:translateY(-4px)}
+.hint{font-size:14px;color:var(--muted);margin:12px 0 0}
+
+.groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.team{appearance:none;display:flex;align-items:center;gap:10px;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--ink);font:600 16px var(--body);cursor:pointer;min-height:48px}
+.team .f{font-size:24px;line-height:1}
+.team small{display:block;font:500 12px var(--body);color:var(--muted)}
+.team[aria-pressed="true"]{background:var(--surface2);border-color:var(--accent)}
+.team .tag{margin-left:auto;font:800 13px var(--display);padding:1px 7px;border-radius:99px}
+.tag.gold{background:var(--gold);color:var(--gold-ink)}
+.tag.silver{background:var(--silver);color:var(--silver-ink)}
+.tag.bronze{background:var(--bronze);color:var(--bronze-ink)}
+
+.btn{appearance:none;border:0;border-radius:10px;padding:13px 18px;font:700 18px var(--display);letter-spacing:.02em;cursor:pointer;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.small{padding:6px 10px;font-size:14px}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.confirm{max-width:420px;margin:0 auto 14px;border-radius:12px;padding:12px 14px;font-weight:600;text-align:center;background:var(--surface2);border-left:4px solid var(--ok)}
+.confirm.err{border-left-color:var(--accent);color:var(--accent)}
+.msg{font-size:14px;margin-top:10px;min-height:1.2em}
+.msg.err{color:var(--accent)}
+
+.poster{aspect-ratio:4/5;max-width:420px;margin:0 auto;border-radius:16px;overflow:hidden;background:linear-gradient(170deg,#0C1436 0%,#0A0F26 60%,#3A0C1E 130%);color:#F4F6FF;padding:22px 20px;display:flex;flex-direction:column;border:1px solid #28336A}
+.poster .ptitle{font:800 clamp(22px,6vw,30px)/1 var(--display)}
+.poster .psub{font-size:13px;color:#A9B2D6;margin-top:6px}
+.poster .pl{margin-top:auto;display:grid;gap:9px}
+.prow{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border-radius:12px;padding:10px 12px}
+.prow .m{font:800 14px var(--display);width:66px;text-align:center;padding:3px 0;border-radius:99px;flex:none}
+.prow .m.g{background:var(--gold);color:var(--gold-ink)}
+.prow .m.s{background:var(--silver);color:var(--silver-ink)}
+.prow .m.b{background:var(--bronze);color:var(--bronze-ink)}
+.prow .fl{font-size:28px;line-height:1}
+.prow .nm{font:700 20px var(--display)}
+.poster .pby{margin-top:16px;font:700 18px var(--display);border-top:2px solid #E63357;padding-top:10px}
+.poster .pby span{color:#A9B2D6;font:500 13px var(--body);display:block}
+
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{padding:9px 8px;text-align:center;border-bottom:1px solid var(--line)}
+th{font:700 15px var(--display);color:var(--muted)}
+td:first-child,th:first-child{text-align:left}
+.tbl{overflow-x:auto}
+.cons{display:grid;gap:8px;margin-top:10px}
+.cons .prow{background:var(--surface2)}
+.empty-note{color:var(--muted);margin:0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Who takes the podium?</h1>
+  <p class="sub">Pick your Gold, Silver and two Bronze nations for MLBB at the 2026 Asian Games, 29 Sep to 1 Oct in Aichi-Nagoya.</p>
+  <span class="pill" id="status" role="status" hidden></span>
+
+  <div class="banner" id="closedBanner" hidden style="margin-top:18px">Voting is closed.</div>
+
+  <div style="margin-top:20px">
+    <div class="card">
+      <div class="row">
+        <div>
+          <label for="cname">Caster name</label>
+          <input type="text" id="cname" autocomplete="off" maxlength="60" placeholder="e.g. Nama caster">
+        </div>
+        <div>
+          <label for="cregion">Region</label>
+          <select id="cregion">
+            <option>Indonesia</option><option>Philippines</option><option>Malaysia</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Your podium</h2>
+      <p class="hint" style="margin-top:4px">Tap a step, then tap a nation. Tap a placed nation again to remove it.</p>
+      <div class="podium" id="podium"></div>
+    </div>
+
+    <div class="card">
+      <h2>Nations</h2>
+      <p class="hint" style="margin:4px 0 12px">11 teams in the Main Stage, with their group in small text.</p>
+      <div class="groups" id="teams"></div>
+    </div>
+
+    <div class="actions" style="margin-top:0">
+      <button class="btn" id="lock" disabled>Lock in prediction</button>
+      <button class="btn ghost" id="reset">Clear podium</button>
+    </div>
+    <div class="msg" id="lockmsg" role="status"></div>
+
+    <div id="result" hidden style="margin-top:22px">
+      <div class="confirm" id="confirm" role="status"></div>
+      <div class="poster" id="poster"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== CONFIG ===== */
+// Paste the Web app URL from your Apps Script deployment (ends with /exec).
+const SCRIPT_URL = '';
+
+const TEAMS = [
+  {id:'MMR', name:'Myanmar',      flag:'🇲🇲', g:'A'},
+  {id:'UZB', name:'Uzbekistan',   flag:'🇺🇿', g:'A'},
+  {id:'HKG', name:'Hong Kong',    flag:'🇭🇰', g:'A'},
+  {id:'IDN', name:'Indonesia',    flag:'🇮🇩', g:'B'},
+  {id:'MYS', name:'Malaysia',     flag:'🇲🇾', g:'B'},
+  {id:'KSA', name:'Saudi Arabia', flag:'🇸🇦', g:'B'},
+  {id:'PHL', name:'Philippines',  flag:'🇵🇭', g:'C'},
+  {id:'JOR', name:'Jordan',       flag:'🇯🇴', g:'C'},
+  {id:'KAZ', name:'Kazakhstan',   flag:'🇰🇿', g:'C'},
+  {id:'KHM', name:'Cambodia',     flag:'🇰🇭', g:'D'},
+  {id:'MNG', name:'Mongolia',     flag:'🇲🇳', g:'D'}
+];
+const KEYS = ['silver','gold','bronze1','bronze2'];
+const LABEL = {gold:'Gold', silver:'Silver', bronze1:'Bronze', bronze2:'Bronze'};
+const $ = id => document.getElementById(id);
+const byId = id => TEAMS.find(t => t.id === id);
+const esc = x => String(x).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const pick = {gold:null, silver:null, bronze1:null, bronze2:null};
+let active = 'gold', saving = false, closed = false;
+
+function renderPodium(){
+  $('podium').innerHTML = KEYS.map(k => {
+    const t = pick[k] ? byId(pick[k]) : null;
+    return `<button class="slot ${t?'filled':''} ${active===k?'active':''}" data-k="${k}" aria-label="${LABEL[k]} slot${t?': '+t.name:', empty'}">
+      <span class="medal">${LABEL[k]}</span>
+      <span class="flag">${t?t.flag:''}</span>
+      ${t?`<span class="tn">${t.name}</span>`:`<span class="empty">Tap to pick</span>`}
+    </button>`;
+  }).join('');
+  $('podium').querySelectorAll('.slot').forEach(b => b.onclick = () => { active = b.dataset.k; renderAll(); });
+}
+function slotOf(id){ return KEYS.find(k => pick[k] === id) || null; }
+function renderTeams(){
+  $('teams').innerHTML = TEAMS.map(t => {
+    const s = slotOf(t.id);
+    const cls = s ? (s==='gold'?'gold':s==='silver'?'silver':'bronze') : '';
+    return `<button class="team" data-id="${t.id}" aria-pressed="${!!s}">
+      <span class="f">${t.flag}</span>
+      <span>${t.name}<small>Group ${t.g}</small></span>
+      ${s?`<span class="tag ${cls}">${LABEL[s]}</span>`:''}
+    </button>`;
+  }).join('');
+  $('teams').querySelectorAll('.team').forEach(b => b.onclick = () => assign(b.dataset.id));
+}
+function assign(id){
+  const cur = slotOf(id);
+  if(cur){ pick[cur] = null; active = cur; }
+  else {
+    pick[active] = id;
+    const next = ['gold','silver','bronze1','bronze2'].find(k => !pick[k]);
+    if(next) active = next;
+  }
+  $('result').hidden = true;
+  renderAll();
+}
+function complete(){ return KEYS.every(k => pick[k]) && $('cname').value.trim().length > 0; }
+function renderAll(){
+  renderPodium(); renderTeams();
+  const configured = !!SCRIPT_URL;
+  $('lock').disabled = !complete() || saving || closed || !configured;
+  $('closedBanner').hidden = !closed;
+  const missing = [];
+  if(!$('cname').value.trim()) missing.push('your name');
+  const empty = KEYS.filter(k => !pick[k]).length;
+  if(empty) missing.push(empty + ' more slot' + (empty>1?'s':''));
+  $('lockmsg').className = 'msg';
+  $('lockmsg').textContent = closed ? '' : !configured ? 'This page is not connected to a spreadsheet yet, so votes cannot be submitted.' : (missing.length ? 'Still needed: ' + missing.join(' and ') + '.' : '');
+}
+
+function showPoster(s){
+  const row = (cls,label,id) => `<div class="prow"><span class="m ${cls}">${label}</span><span class="fl">${byId(id).flag}</span><span class="nm">${byId(id).name}</span></div>`;
+  $('poster').innerHTML = `
+    <div><div class="ptitle">Caster prediction</div><div class="psub">MLBB · Asian Games 2026 · Aichi-Nagoya</div></div>
+    <div class="pl">${row('g','GOLD',s.gold)}${row('s','SILVER',s.silver)}${row('b','BRONZE',s.bronze1)}${row('b','BRONZE',s.bronze2)}</div>
+    <div class="pby"><span>Predicted by</span>${esc(s.name)}, ${esc(s.region)}</div>`;
+}
+function setConfirm(text, isErr){ const c = $('confirm'); c.className = 'confirm' + (isErr ? ' err' : ''); c.textContent = text; }
+
+async function lock(){
+  if(!complete() || saving || closed || !SCRIPT_URL) return;
+  const s = {name:$('cname').value.trim(), region:$('cregion').value, gold:pick.gold, silver:pick.silver, bronze1:pick.bronze1, bronze2:pick.bronze2};
+  saving = true; renderAll();
+  $('lock').textContent = 'Submitting…';
+  $('result').hidden = false; $('poster').innerHTML = '';
+  setConfirm('Submitting your vote…', false);
+  try{
+    // text/plain keeps this a "simple" request, so the browser sends it without a CORS preflight
+    const res = await fetch(SCRIPT_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(s)});
+    const out = await res.json();
+    if(out.error === 'closed'){ closed = true; throw {closed:true}; }
+    if(!out.ok) throw new Error(out.error || 'failed');
+    // the sheet echoes back what it stored; only confirm if it matches
+    const nm = id => byId(id).name, v = out.saved || {};
+    const same = v.name === s.name && v.region === s.region && v.gold === nm(s.gold) && v.silver === nm(s.silver)
+              && v.bronze1 === nm(s.bronze1) && v.bronze2 === nm(s.bronze2);
+    if(!same) throw new Error('mismatch');
+    showPoster(s);
+    const t = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    setConfirm('Submitted and saved at ' + t + '. You can change your vote until voting closes by submitting again with the same name.', false);
+  }catch(e){
+    $('poster').innerHTML = '';
+    setConfirm(e && e.closed
+      ? 'Not submitted. Voting is closed.'
+      : 'Not submitted. We could not confirm that your vote was saved, so please check your connection and tap "Lock in prediction" again.', true);
+  }
+  $('lock').textContent = 'Lock in prediction';
+  saving = false; renderAll();
+  $('result').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+$('cname').addEventListener('input', renderAll);
+$('lock').onclick = lock;
+$('reset').onclick = () => { KEYS.forEach(k => pick[k] = null); active = 'gold'; $('result').hidden = true; renderAll(); };
+renderAll();
+</script>
+</body>
+</html>
